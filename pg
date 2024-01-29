@@ -1,0 +1,50 @@
+# importing packages
+import psycopg2
+import pandas as pd
+
+# forming connection
+conn = psycopg2.connect(
+    database="demo",
+    user='postgres',
+    password='',
+    host='127.0.0.1',
+    port='5432'
+)
+
+conn.autocommit = True
+cursor = conn.cursor()
+
+#################################
+
+sql = ''' select count(*) from public.test'''
+
+cursor.execute(sql)
+
+results = cursor.fetchone() 
+
+print("Total number of rows in the table:", results[0]) 
+
+#################################
+
+sql = ''' delete from public.test'''
+
+cursor.execute(sql)
+
+#################################
+
+csv_file_name = 'data.csv'
+sql = "COPY public.test FROM STDIN DELIMITER ',' CSV HEADER"
+cursor.copy_expert(sql, open(csv_file_name, "r"))
+
+#################################
+
+sql = ''' select count(*) from public.test'''
+
+cursor.execute(sql)
+
+results = cursor.fetchone() 
+
+print("Total number of rows in the table:", results[0]) 
+
+#################################
+
